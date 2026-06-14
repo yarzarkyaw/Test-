@@ -15,6 +15,7 @@
         .ai-output { font-size: 20px; font-weight: bold; }
         .bet-info { margin-top: 10px; padding-top: 10px; border-top: 1px solid #333; color: #FFD700; font-weight: bold; }
 
+        /* Stats Section */
         .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 13px; color: #aaa; border-top: 1px solid #333; padding-top: 10px;}
         .stat-item { display: flex; justify-content: space-between; }
 
@@ -83,7 +84,9 @@
     let currentLevel = 1;
     let lastPrediction = null;
     let lastIssue = null;
-    let historyLog = JSON.parse(localStorage.getItem('historyLog')) || [];
+    
+    // sessionStorage ကို ပြောင်းသုံးထားပါတယ်
+    let historyLog = JSON.parse(sessionStorage.getItem('historyLog')) || [];
 
     function getNumClass(n) {
         if (n === 0) return 'num-zero';
@@ -125,7 +128,10 @@
                     if (isWin) currentLevel = 1; else currentLevel++;
                     
                     historyLog.unshift({ issue: currentIssue, pred: lastPrediction, res: actualResult, status: isWin ? "Win" : "Lose" });
-                    localStorage.setItem('historyLog', JSON.stringify(historyLog));
+                    
+                    // sessionStorage မှာ သိမ်းမယ်
+                    sessionStorage.setItem('historyLog', JSON.stringify(historyLog));
+                    
                     updateHistoryTable();
                     updateStats();
                 }
@@ -169,4 +175,4 @@
     fetchLottery();
 </script>
 </body>
-</html>
+    </html>
