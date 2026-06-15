@@ -242,7 +242,7 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
                 const probBig = sequence.slice(0, 5).filter(x => x === "BIG").length / 5;
                 lastPrediction = (probBig > 0.5) ? "BIG" : "SMALL";
                 
-                document.getElementById('ai-prediction').innerText = (lastPrediction === "BIG") ? "အကြီး" : "அသေး";
+                document.getElementById('ai-prediction').innerText = (lastPrediction === "BIG") ? "အကြီး" : "အသေး";
                 document.getElementById('bet-plan').innerText = `Stage: ${currentLevel} | Bet: ${Math.pow(3, currentLevel - 1)}x`;
             }
         } catch(e) {}
@@ -270,4 +270,4 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
     fetchLottery();
 </script>
 </body>
-</html>
+                                          </html>
