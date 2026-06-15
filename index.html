@@ -4,103 +4,77 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>6WIN AI PRO</title>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-font-family:Segoe UI,Arial,sans-serif;
-background:radial-gradient(circle at top,#0f172a,#020617 70%);
-color:#fff;padding:12px;min-height:100vh}
-.container{max-width:520px;margin:auto}
-.card{
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(16px);
-border:1px solid rgba(255,255,255,.08);
-border-radius:18px;
-padding:16px;
-margin-bottom:14px;
-box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.logo{text-align:center;font-size:24px;font-weight:900;color:#00ff88}
-.timer{font-size:52px;text-align:center;color:#FFD700;font-weight:900}
-.ai{text-align:center;font-size:32px;font-weight:900}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.stat{padding:10px;border-radius:10px;background:rgba(255,255,255,.05);text-align:center}
-.list-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);margin:6px 0}
-.num-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold}
-.num-green{background:#16a34a}.num-red{background:#dc2626}
-.num-zero{background:linear-gradient(90deg,#dc2626 50%,#9333ea 50%)}
-.num-five{background:linear-gradient(90deg,#16a34a 50%,#9333ea 50%)}
-.history-table-wrapper {max-height: 250px; overflow-y: auto;}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid rgba(255,255,255,.08);padding:8px;text-align:center}
-th{background:#111827;position:sticky;top:0;color:#ff9800}
-.win { color: #00ff88; font-weight: bold; }
-.lose { color: #ff5252; font-weight: bold; }
-</style>
-</head>
-<body><!DOCTYPE html>
-<html lang="my">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Warning Notice</title>
-<style>
-    /* Modal Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: Segoe UI, Arial, sans-serif;
+        background: radial-gradient(circle at top, #0f172a, #020617 70%);
+        color: #fff; padding: 12px; min-height: 100vh;
+    }
+    .container { max-width: 520px; margin: auto; }
+    .card {
+        background: rgba(255,255,255,.05);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,.08);
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    }
+    .logo { text-align: center; font-size: 24px; font-weight: 900; color: #00ff88; }
+    .timer { font-size: 52px; text-align: center; color: #FFD700; font-weight: 900; }
+    .ai { text-align: center; font-size: 32px; font-weight: 900; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .stat { padding: 10px; border-radius: 10px; background: rgba(255,255,255,.05); text-align: center; }
+    .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-radius: 10px; background: rgba(255,255,255,.04); margin: 6px 0; }
+    .num-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .num-green { background: #16a34a; }
+    .num-red { background: #dc2626; }
+    .num-zero { background: linear-gradient(90deg, #dc2626 50%, #9333ea 50%); }
+    .num-five { background: linear-gradient(90deg, #16a34a 50%, #9333ea 50%); }
+    .history-table-wrapper { max-height: 250px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid rgba(255,255,255,.08); padding: 8px; text-align: center; }
+    th { background:#111827; position: sticky; top: 0; color: #ff9800; }
+    .win { color: #00ff88; font-weight: bold; }
+    .lose { color: #ff5252; font-weight: bold; }
+
+    /* Button & Modal Styles */
+    .vote-group { display: flex; gap: 12px; margin-top: 12px; }
+    .btn-big {
+        flex: 1; background: #16a34a; border: none; border-radius: 10px;
+        padding: 14px; color: #fff; font-size: 18px; font-weight: bold;
+        cursor: pointer; transition: background 0.2s;
+    }
+    .btn-big:hover { background: #15803d; }
+    .btn-small {
+        flex: 1; background: #dc2626; border: none; border-radius: 10px;
+        padding: 14px; color: #fff; font-size: 18px; font-weight: bold;
+        cursor: pointer; transition: background 0.2s;
+    }
+    .btn-small:hover { background: #b91c1c; }
+
     .warning-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(5px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-        font-family: 'Pyidaungsu', 'Segoe UI', Arial, sans-serif;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 9999; font-family: 'Pyidaungsu', 'Segoe UI', Arial, sans-serif;
     }
     .warning-box {
-        background: #111827;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 24px;
-        width: 90%;
-        max-width: 420px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        text-align: center;
+        background: #111827; border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px; padding: 24px; width: 90%; max-width: 420px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); text-align: center;
     }
-    .warning-icon {
-        font-size: 48px;
-        margin-bottom: 12px;
-    }
-    .warning-title {
-        color: #ef4444;
-        font-size: 22px;
-        font-weight: bold;
-        margin-bottom: 16px;
-    }
-    .warning-text {
-        color: #e2e8f0;
-        font-size: 15px;
-        line-height: 1.6;
-        margin-bottom: 24px;
-        text-align: justify;
-    }
+    .warning-icon { font-size: 48px; margin-bottom: 12px; }
+    .warning-title { color: #ef4444; font-size: 22px; font-weight: bold; margin-bottom: 16px; }
+    .warning-text { color: #e2e8f0; font-size: 15px; line-height: 1.6; margin-bottom: 24px; text-align: justify; }
     .warning-btn {
-        background: #10b981;
-        color: #fff;
-        border: none;
-        border-radius: 10px;
-        padding: 12px 24px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        width: 100%;
-        transition: background 0.3s;
+        background: #10b981; color: #fff; border: none; border-radius: 10px;
+        padding: 12px 24px; font-size: 16px; font-weight: bold; cursor: pointer;
+        width: 100%; transition: background 0.3s;
     }
-    .warning-btn:hover {
-        background: #059669;
-    }
+    .warning-btn:hover { background: #059669; }
 </style>
 </head>
 <body>
@@ -117,62 +91,50 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
         </div>
     </div>
 
-    <script>
-        // စာမျက်နှာဖွင့်ချိန်တွင် အသိပေးချက်ကို စစ်ဆေးခြင်း
-        document.addEventListener("DOMContentLoaded", function() {
-            if (!sessionStorage.getItem('warning_acknowledged')) {
-                document.getElementById('warning-modal').style.display = 'flex';
-            } else {
-                document.getElementById('warning-modal').style.display = 'none';
-            }
-        });
+    <div class="container">
+        <div class="card">
+            <div style="text-align: center; color: #ff5252; font-weight: bold; margin-bottom: 8px; font-size: 16px;">6lottery Wingo 30 Second</div>
+            <div class="logo">⚡ 6WIN AI PRO</div>
+            <div id="next-issue" style="text-align:center; margin-top: 6px; font-weight: bold;">Loading...</div>
+            <div id="countdown" class="timer">30</div>
+        </div>
 
-        // အသိပေးချက်ကို အတည်ပြုခလုတ်နှိပ်ခြင်း
-        function acknowledgeWarning() {
-            sessionStorage.setItem('warning_acknowledged', 'true');
-            document.getElementById('warning-modal').style.display = 'none';
-        }
-    </script>
+        <div class="card">
+            <div style="text-align:center;color:#00ff88; font-weight: bold;">AI Neural Engine ခန့်မှန်းချက်</div>
+            <div id="ai-prediction" class="ai">---</div>
+            <div id="bet-plan" style="text-align:center; color:#FFD700; font-weight: bold; margin-top: 8px;">Stage: 1 | Bet: 1x</div>
+            
+            <div class="vote-group">
+                <button class="btn-big" onclick="castVote('BIG')">🟢 အကြီး (BIG)</button>
+                <button class="btn-small" onclick="castVote('SMALL')">🔴 အသေး (SMALL)</button>
+            </div>
 
-</body>
-</html>
-<div class="container">
-<div class="card">
-<div style="text-align: center; color: #ff5252; font-weight: bold; margin-bottom: 8px; font-size: 16px;">6lottery Wingo 30 Second</div>
-<div class="logo">⚡ 6WIN AI PRO</div>
-<div id="next-issue" style="text-align:center; margin-top: 6px; font-weight: bold;">Loading...</div>
-<div id="countdown" class="timer">30</div>
-</div>
+            <div class="stats">
+                <div class="stat">Win: <span id="win-count" class="win">0</span></div>
+                <div class="stat">Lose: <span id="lose-count" class="lose">0</span></div>
+                <div class="stat">Win %: <span id="win-rate">0%</span></div>
+                <div class="stat">Lose %: <span id="lose-rate">0%</span></div>
+            </div>
+        </div>
 
-<div class="card">
-<div style="text-align:center;color:#00ff88; font-weight: bold;">AI Neural Engine ခန့်မှန်းချက်</div>
-<div id="ai-prediction" class="ai">---</div>
-<div id="bet-plan" style="text-align:center; color:#FFD700; font-weight: bold; margin-top: 8px;">Stage: 1 | Bet: 1x</div>
-<div class="stats">
-<div class="stat">Win: <span id="win-count" class="win">0</span></div>
-<div class="stat">Lose: <span id="lose-count" class="lose">0</span></div>
-<div class="stat">Win %: <span id="win-rate">0%</span></div>
-<div class="stat">Lose %: <span id="lose-rate">0%</span></div>
-</div>
-</div>
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 8px; color: #ff9800;">AI Prediction History</h3>
+            <div class="history-table-wrapper">
+                <table>
+                    <thead><tr><th>Period</th><th>Pred</th><th>Result</th><th>Status</th></tr></thead>
+                    <tbody id="history-body"></tbody>
+                </table>
+            </div>
+        </div>
 
-<div class="card">
-<h3 style="text-align: center; margin-bottom: 8px; color: #ff9800;">AI Prediction History</h3>
-<div class="history-table-wrapper">
-<table>
-<thead><tr><th>Period</th><th>Pred</th><th>Result</th><th>Status</th></tr></thead>
-<tbody id="history-body"></tbody>
-</table>
-</div>
-</div>
-
-<div class="card">
-<h3 style="text-align: center; margin-bottom: 8px; color: #ff9800;">Live Results</h3>
-<div id="results-list"></div>
-</div>
-</div>
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 8px; color: #ff9800;">Live Results</h3>
+            <div id="results-list"></div>
+        </div>
+    </div>
 
 <script>
+    // လုံခြုံရေးသတိပေးချက် - တိုကင် (Token) များကို Client ဘက်တွင် ထားခြင်းသည် အန္တရာယ်ရှိနိုင်ပါသည်။
     const MY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIxNzgxMzA0NjkyIiwibmJmIjoiMTc4MTMwNDY5MiIsImV4cCI6IjE3ODEzMDY0OTIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiI2LzEzLzIwMjYgNTo1MTozMiBBTSIsImh0dHA6Ly9zY2hlbWFzLW1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFjY2Vzc19Ub2tlbiIsIlVzZXJJZCI6IjEwNzg0OTMyIiwiVXNlck5hbWUiOiI5NTk2OTMyMjM2NzMiLCJVc2VyUGhvdG8iOiIxIiwiTmlja05hbWUiOiJNZW1iZXJOTkdSQzhERiIsIkFtb3VudCI6IjYwLjI5IiwiSW50ZWdyYWwiOiIwIiwiTG9naW5NYXJrIjoiSFMiLCJMb2dpblRpbWUiOiI2LzEzLzIwMjYgNToyMTozMiBBTSIsIkxvZ2luSVBBZGRyZXNzIjoiNzQuNTAuMjE1LjQyIiwiRGJOdW1iZXIiOiIwIiwiSXN2YWxpZGF0b3IiOiIwIiwiS2V5Q29kZSI6IjQyNiIsIlRva2VuVHlwZSI6IkFjY2Vzc19Ub2tlbiIsIlBob25lVHlwZSI6IjEiLCJVc2VyVHlwZSI6IjAiLCJVc2VyTmFtZTIiLCJpc3MiOiJqd3RJc3N1ZXIiLCJhdWQiOiJsb3R0ZXJ5VGlja2V0In0.Z2M5zAlgPntyeDb5oVVdlSIzGRjLuzndxauTYyI6r-Y";
     
     const sound1 = new Audio('https://6winak3.com/assets/mp3/di1-BcK6vZoZ.mp3');
@@ -183,6 +145,44 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
     let lastIssue = null;
     
     let historyLog = JSON.parse(sessionStorage.getItem('historyLog')) || [];
+
+    // Socket.io ချိတ်ဆက်ခြင်း
+    const socket = io("https://node-master.yarzarkyaw027.replit.dev");
+
+    socket.on("connect", () => {
+        console.log("Replit Backend ဆာဗာသို့ ချိတ်ဆက်ပြီးပါပြီ။");
+    });
+
+    // မဲပေးသည့် ခလုတ်နှိပ်သောအခါ လုပ်ဆောင်ချက်
+    function castVote(voteType) {
+        if (socket.connected) {
+            socket.emit("cast_vote", {
+                vote: voteType,
+                issue: lastIssue,
+                timestamp: new Date().toISOString()
+            });
+            alert("သင် " + (voteType === 'BIG' ? "အကြီး (BIG)" : "အသေး (SMALL)") + " ကို မဲပေးပြီးပါပြီ။");
+        } else {
+            alert("ဆာဗာနှင့် ချိတ်ဆက်မနေသေးပါ။ ခဏစောင့်ပေးပါ။");
+        }
+    }
+
+    // Modal စာမျက်နှာဖွင့်ချိန်တွင် စစ်ဆေးခြင်း
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!sessionStorage.getItem('warning_acknowledged')) {
+            document.getElementById('warning-modal').style.display = 'flex';
+        } else {
+            document.getElementById('warning-modal').style.display = 'none';
+        }
+        updateHistoryTable();
+        updateStats();
+    });
+
+    // အသိပေးချက်ကို အတည်ပြုခလုတ်နှိပ်ခြင်း
+    function acknowledgeWarning() {
+        sessionStorage.setItem('warning_acknowledged', 'true');
+        document.getElementById('warning-modal').style.display = 'none';
+    }
 
     function getNumClass(n) {
         if (n === 0) return 'num-zero';
@@ -237,13 +237,26 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
                     return `<div class="list-item"><div>${item.issueNumber}</div><div class="num-circle ${getNumClass(num)}">${num}</div><div>${(num >= 5) ? "အကြီး" : "အသေး"}</div></div>`;
                 }).join('');
 
-                document.getElementById('next-issue').innerText = "Next Period: " + (BigInt(currentIssue) + 1n).toString();
+                const nextPeriodStr = (BigInt(currentIssue) + 1n).toString();
+                document.getElementById('next-issue').innerText = "Next Period: " + nextPeriodStr;
                 const sequence = list.map(i => (parseInt(i.number) >= 5 ? "BIG" : "SMALL"));
                 const probBig = sequence.slice(0, 5).filter(x => x === "BIG").length / 5;
                 lastPrediction = (probBig > 0.5) ? "BIG" : "SMALL";
                 
-                document.getElementById('ai-prediction').innerText = (lastPrediction === "BIG") ? "အကြီး" : "အသေး";
-                document.getElementById('bet-plan').innerText = `Stage: ${currentLevel} | Bet: ${Math.pow(3, currentLevel - 1)}x`;
+                const predText = (lastPrediction === "BIG") ? "အကြီး" : "အသေး";
+                const stageText = `Stage: ${currentLevel} | Bet: ${Math.pow(3, currentLevel - 1)}x`;
+
+                document.getElementById('ai-prediction').innerText = predText;
+                document.getElementById('bet-plan').innerText = stageText;
+
+                // အလိုအလျောက် ဆာဗာသို့ ခန့်မှန်းချက်များ ပို့ပေးခြင်း
+                if (socket.connected) {
+                    socket.emit("send_prediction", {
+                        issue: nextPeriodStr,
+                        prediction: predText,
+                        betPlan: stageText
+                    });
+                }
             }
         } catch(e) {}
     }
@@ -253,9 +266,6 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
             <tr><td>${h.issue.slice(-3)}</td><td>${h.pred === "BIG" ? "အကြီး" : "အသေး"}</td><td>${h.res === "BIG" ? "အကြီး" : "အသေး"}</td><td class="${h.status === 'Win' ? 'win' : 'lose'}">${h.status}</td></tr>
         `).join('');
     }
-
-    updateHistoryTable();
-    updateStats();
 
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") fetchLottery(); });
     setInterval(() => {
@@ -270,4 +280,4 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
     fetchLottery();
 </script>
 </body>
-                                          </html>
+    </html>
