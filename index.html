@@ -17,9 +17,7 @@
         background: rgba(255,255,255,.05);
         backdrop-filter: blur(16px);
         border: 1px solid rgba(255,255,255,.08);
-        border-radius: 18px;
-        padding: 16px;
-        margin-bottom: 14px;
+        border-radius: 18px; padding: 16px; margin-bottom: 14px;
         box-shadow: 0 10px 30px rgba(0,0,0,.4);
     }
     .logo { text-align: center; font-size: 24px; font-weight: 900; color: #00ff88; }
@@ -40,7 +38,6 @@
     .win { color: #00ff88; font-weight: bold; }
     .lose { color: #ff5252; font-weight: bold; }
 
-    /* Button & Modal Styles */
     .vote-group { display: flex; gap: 12px; margin-top: 12px; }
     .btn-big {
         flex: 1; background: #16a34a; border: none; border-radius: 10px;
@@ -134,7 +131,6 @@
     </div>
 
 <script>
-    // လုံခြုံရေးသတိပေးချက် - တိုကင် (Token) များကို Client ဘက်တွင် ထားခြင်းသည် အန္တရာယ်ရှိနိုင်ပါသည်။
     const MY_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOiIxNzgxMzA0NjkyIiwibmJmIjoiMTc4MTMwNDY5MiIsImV4cCI6IjE3ODEzMDY0OTIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL2V4cGlyYXRpb24iOiI2LzEzLzIwMjYgNTo1MTozMiBBTSIsImh0dHA6Ly9zY2hlbWFzLW1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFjY2Vzc19Ub2tlbiIsIlVzZXJJZCI6IjEwNzg0OTMyIiwiVXNlck5hbWUiOiI5NTk2OTMyMjM2NzMiLCJVc2VyUGhvdG8iOiIxIiwiTmlja05hbWUiOiJNZW1iZXJOTkdSQzhERiIsIkFtb3VudCI6IjYwLjI5IiwiSW50ZWdyYWwiOiIwIiwiTG9naW5NYXJrIjoiSFMiLCJMb2dpblRpbWUiOiI2LzEzLzIwMjYgNToyMTozMiBBTSIsIkxvZ2luSVBBZGRyZXNzIjoiNzQuNTAuMjE1LjQyIiwiRGJOdW1iZXIiOiIwIiwiSXN2YWxpZGF0b3IiOiIwIiwiS2V5Q29kZSI6IjQyNiIsIlRva2VuVHlwZSI6IkFjY2Vzc19Ub2tlbiIsIlBob25lVHlwZSI6IjEiLCJVc2VyVHlwZSI6IjAiLCJVc2VyTmFtZTIiLCJpc3MiOiJqd3RJc3N1ZXIiLCJhdWQiOiJsb3R0ZXJ5VGlja2V0In0.Z2M5zAlgPntyeDb5oVVdlSIzGRjLuzndxauTYyI6r-Y";
     
     const sound1 = new Audio('https://6winak3.com/assets/mp3/di1-BcK6vZoZ.mp3');
@@ -146,14 +142,13 @@
     
     let historyLog = JSON.parse(sessionStorage.getItem('historyLog')) || [];
 
-    // Socket.io ချိတ်ဆက်ခြင်း
+    // Replit လင့်ခ်အစစ် (သင့် Replit URL) ကို အောက်ပါစာကြောင်းတွင် အစားထိုးပါ
     const socket = io("https://node-master.yarzarkyaw027.replit.dev");
 
     socket.on("connect", () => {
         console.log("Replit Backend ဆာဗာသို့ ချိတ်ဆက်ပြီးပါပြီ။");
     });
 
-    // မဲပေးသည့် ခလုတ်နှိပ်သောအခါ လုပ်ဆောင်ချက်
     function castVote(voteType) {
         if (socket.connected) {
             socket.emit("cast_vote", {
@@ -167,7 +162,6 @@
         }
     }
 
-    // Modal စာမျက်နှာဖွင့်ချိန်တွင် စစ်ဆေးခြင်း
     document.addEventListener("DOMContentLoaded", function() {
         if (!sessionStorage.getItem('warning_acknowledged')) {
             document.getElementById('warning-modal').style.display = 'flex';
@@ -178,7 +172,6 @@
         updateStats();
     });
 
-    // အသိပေးချက်ကို အတည်ပြုခလုတ်နှိပ်ခြင်း
     function acknowledgeWarning() {
         sessionStorage.setItem('warning_acknowledged', 'true');
         document.getElementById('warning-modal').style.display = 'none';
@@ -222,9 +215,7 @@
                     const isWin = (actualResult === lastPrediction);
                     
                     if (isWin) currentLevel = 1; else currentLevel++;
-                    
                     historyLog.unshift({ issue: currentIssue, pred: lastPrediction, res: actualResult, status: isWin ? "Win" : "Lose" });
-                    
                     sessionStorage.setItem('historyLog', JSON.stringify(historyLog));
                     
                     updateHistoryTable();
@@ -249,7 +240,6 @@
                 document.getElementById('ai-prediction').innerText = predText;
                 document.getElementById('bet-plan').innerText = stageText;
 
-                // အလိုအလျောက် ဆာဗာသို့ ခန့်မှန်းချက်များ ပို့ပေးခြင်း
                 if (socket.connected) {
                     socket.emit("send_prediction", {
                         issue: nextPeriodStr,
@@ -280,4 +270,4 @@
     fetchLottery();
 </script>
 </body>
-    </html>
+           </html>
