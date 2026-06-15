@@ -37,7 +37,105 @@ th{background:#111827;position:sticky;top:0;color:#ff9800}
 .lose { color: #ff5252; font-weight: bold; }
 </style>
 </head>
+<body><!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warning Notice</title>
+<style>
+    /* Modal Styles */
+    .warning-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: 'Pyidaungsu', 'Segoe UI', Arial, sans-serif;
+    }
+    .warning-box {
+        background: #111827;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 24px;
+        width: 90%;
+        max-width: 420px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        text-align: center;
+    }
+    .warning-icon {
+        font-size: 48px;
+        margin-bottom: 12px;
+    }
+    .warning-title {
+        color: #ef4444;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 16px;
+    }
+    .warning-text {
+        color: #e2e8f0;
+        font-size: 15px;
+        line-height: 1.6;
+        margin-bottom: 24px;
+        text-align: justify;
+    }
+    .warning-btn {
+        background: #10b981;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.3s;
+    }
+    .warning-btn:hover {
+        background: #059669;
+    }
+</style>
+</head>
 <body>
+
+    <div id="warning-modal" class="warning-overlay">
+        <div class="warning-box">
+            <div class="warning-icon">⚠️</div>
+            <div class="warning-title">သတိပေးချက်</div>
+            <div class="warning-text">
+                ဤ website သည် အခပေးမဟုတ်ပါ။<br>
+                ဤ website နှင့်ပက်သက်၍ တစ်စုံတစ်ယောက်မှ ငွေကြေးတောင်းခံလျှင် လိမ်လည်ခြင်းသာဖြစ်ပါသည်။
+            </div>
+            <button class="warning-btn" onclick="acknowledgeWarning()">နားလည်သဘောပေါက်ပါသည်</button>
+        </div>
+    </div>
+
+    <script>
+        // စာမျက်နှာဖွင့်ချိန်တွင် အသိပေးချက်ကို စစ်ဆေးခြင်း
+        document.addEventListener("DOMContentLoaded", function() {
+            if (!sessionStorage.getItem('warning_acknowledged')) {
+                document.getElementById('warning-modal').style.display = 'flex';
+            } else {
+                document.getElementById('warning-modal').style.display = 'none';
+            }
+        });
+
+        // အသိပေးချက်ကို အတည်ပြုခလုတ်နှိပ်ခြင်း
+        function acknowledgeWarning() {
+            sessionStorage.setItem('warning_acknowledged', 'true');
+            document.getElementById('warning-modal').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
 <div class="container">
 <div class="card">
 <div style="text-align: center; color: #ff5252; font-weight: bold; margin-bottom: 8px; font-size: 16px;">6lottery Wingo 30 Second</div>
